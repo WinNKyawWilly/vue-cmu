@@ -2,9 +2,9 @@
 import { toRefs, defineProps } from 'vue'
 import type { Event } from '@/types'
 import { storeToRefs } from 'pinia'
-import { useMessageStore } from '@/stores/message'
+import { useEditStore } from '@/stores/edit';
 
-const store = useMessageStore()
+const store = useEditStore()
 const { message } = storeToRefs(store)
 
 const props = defineProps<{
@@ -15,15 +15,18 @@ const { event } = toRefs(props)
 </script>
 
 <template>
-    <div id="flashMessage" v-if="message">
-        <p>{{ message }}</p>
+
+    <div v-if="message">
+        <div id="flashEdit">
+            <h4>{{ message }}</h4>
+        </div>
     </div>
     <p>{{ event.time }} on {{ event.date }} @ {{ event.location }}</p>
     <p>{{ event.description }}</p>
 </template>
 
 <style>
-#flashMessage {
+#flashEdit {
     position: fixed;
     top: 0;
     right: 0;

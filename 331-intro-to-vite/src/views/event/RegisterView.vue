@@ -18,7 +18,7 @@ const register = () => {
     //Push back to the event detail view
     store.updateMessage('Event Registered for ' + event.value.title)
     setTimeout(() => {
-        store.resetMessage('')
+        store.resetMessage()
     }, 3000);
     router.push({ name: 'event-detail-view', params: { id: props.id } })
 }

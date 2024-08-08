@@ -2,11 +2,14 @@
 import EventCard from '@/components/EventCard.vue'
 import EventInfo from '@/components/EventInfo.vue';
 import type { Event } from '@/types'
-import { ref, watchEffect, computed } from 'vue'
+import { ref, watchEffect, computed, onMounted } from 'vue'
 import EventService from '@/services/EventService';
+import nProgress from 'nprogress'
+import { useRouter } from 'vue-router'
 
 const events = ref<Event[] | null>(null)
 const totalEvents = ref(0)
+const router = useRouter()
 const hasNextPage = computed(() => {
   const totalPages = Math.ceil(totalEvents.value / props.pageSize)
   return page.value < totalPages
@@ -25,12 +28,17 @@ const props = defineProps({
 const page = computed(() => props.page)
 const pageSize = computed(() => props.pageSize)
 
-watchEffect(() => {
-  EventService.getEvents(pageSize.value, page.value)
-    .then((response) => {
-      events.value = response.data
-      totalEvents.value = response.headers['x-total-count']
-    })
+onMounted(() => {
+  watchEffect(() => {
+    EventService.getEvents(pageSize.value, page.value)
+      .then((response) => {
+        events.value = response.data
+        totalEvents.value = response.headers['x-total-count']
+      })
+      .catch(() => {
+        router.push({ name: 'network-error' })
+      })
+  })
 })
 </script>
 
